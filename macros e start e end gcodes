@@ -1,0 +1,172 @@
+prusaslicer
+
+;Start Gcodes multicolor same layer
+
+
+M117 Aquecer Cama                ; Espera por temperaturas de impressão
+M190 S[first_layer_bed_temperature] ;heat up the bed and wait till temperature is reached
+M117 Aquecer Bico
+M109 S[first_layer_temperature] ;heat up the nozzle and wait till temperature is reached
+G92 E0                           ; Reset Extruder
+
+M117 Linha de Purga              ; Linha de purga
+G1 X4.1 Y200.0 Z0.2 F1500.0 E15  ; Draw the first line
+G1 X4.4 Y200.0 Z0.2 F5000.0      ; Move to side a little
+G1 X4.4 Y20 Z0.2 F1500.0 E30     ; Draw the second line
+G92 E0                           ; Reset Extruder
+G1 Z5.0 F3000                    ; Lift nozzle 5 mm
+M117 A Imprimir
+
+
+cura
+
+
+;Start Gcodes multicolor same layer
+
+G92 E0                           ; Reset Extruder
+
+M117 Linha de Purga              ; Linha de purga
+G1 X4.1 Y200.0 Z0.2 F1500.0 E15  ; Draw the first line
+G1 X4.4 Y200.0 Z0.2 F5000.0      ; Move to side a little
+G1 X4.4 Y20 Z0.2 F1500.0 E30     ; Draw the second line
+G92 E0                           ; Reset Extruder
+G1 Z5.0 F3000                    ; Lift nozzle 5 mm
+M117 A Imprimir
+
+
+
+
+;End Gcodes multicolor same layer
+
+M117 Impressao finalizada...
+G91                              ; Relative positioning
+G1 E-0.5 F3000                   ; Retract a bit more and raise Z
+G90                              ; Return to absolute positionning
+G1 X10 Y200 Z30 F2000            ; Wipe out
+G92 E0                           ; Reset Extruder
+
+
+Klipper Macros
+
+
+#################################################
+##            START PRINT MACRO                ##
+#################################################
+[gcode_macro START_PRINT]
+gcode:
+    M117 Homing
+    G90
+    G28
+    G90
+    M117 Nivelar mesa
+#    BED_MESH_CALIBRATE      # ativar caso usem nivelamento automatico
+    G1 X2 Y50 Z10 F1500.0
+    {% set BED_TEMP = params.BED_TEMP|default(0)|float %}
+    {% set EXTRUDER_TEMP = params.EXTRUDER_TEMP|default(0)|float %}
+    M117 Espera temperaturas
+    M140 S{BED_TEMP}
+    {% if printer.heater_bed.temperature > params.BED_TEMP|float*0 %}
+        M140 S{BED_TEMP}
+        M109 S{EXTRUDER_TEMP}
+        M190 S{BED_TEMP}
+    {% else %}
+        M190 S{params.BED_TEMP|float*0}
+        M109 S{EXTRUDER_TEMP}
+        M190 S{BED_TEMP}
+    {% endif %}
+    PRIME_LINE
+    M117 A Imprimir...
+
+#######PRIME LINE####################
+
+[gcode_macro PRIME_LINE]
+gcode:
+    G92 E3
+    M117 Linha de purga
+    G92 E0
+    G1 Z2.0 F3000
+    G1 X1 Y30 Z0.2 F5000.0
+    G1 X1 Y200.0 Z0.2 F1500.0 E15
+    G1 X2 Y200.0 Z0.2 F5000.0
+    G1 X2 Y50 Z0.2 F1500.0 E30
+    G92 E0
+    G1 Z2.0 F3000
+
+###### START PRINT MULTILAYER #####
+[gcode_macro START_PRINT_MULTILAYER]
+gcode:
+    {% set BED_TEMP = params.BED_TEMP|default(0)|float %}
+    {% set EXTRUDER_TEMP = params.EXTRUDER_TEMP|default(0)|float %}
+    M117 Espera temperaturas
+    M140 S{BED_TEMP}
+    {% if printer.heater_bed.temperature > params.BED_TEMP|float*0 %}
+        M140 S{BED_TEMP}
+        M109 S{EXTRUDER_TEMP}
+        M190 S{BED_TEMP}
+    {% else %}
+        M190 S{params.BED_TEMP|float*0}
+        M109 S{EXTRUDER_TEMP}
+        M190 S{BED_TEMP}
+    {% endif %}
+    G92 E0
+    PRIME_LINE
+    M117 Imprimir multi camada...
+####################################
+
+###### START PRINT MULTILAYER #####
+[gcode_macro START_PRINT_MULTILAYER_NO_PRIME]
+gcode:
+    {% set BED_TEMP = params.BED_TEMP|default(0)|float %}
+    {% set EXTRUDER_TEMP = params.EXTRUDER_TEMP|default(0)|float %}
+    M117 Espera temperaturas
+    M140 S{BED_TEMP}
+    {% if printer.heater_bed.temperature > params.BED_TEMP|float*0 %}
+        M140 S{BED_TEMP}
+        M109 S{EXTRUDER_TEMP}
+        M190 S{BED_TEMP}
+    {% else %}
+        M190 S{params.BED_TEMP|float*0}
+        M109 S{EXTRUDER_TEMP}
+        M190 S{BED_TEMP}
+    {% endif %}
+    G92 E0
+    PURGE
+    M117 Imprimir multi layer...
+
+#################################################
+##              END PRINT MACRO                ##
+#################################################
+[gcode_macro END_PRINT]
+gcode:
+    M117 Impressao finalizada...
+    G91
+    G1 E-3 F3000
+    G90
+    G1 X10 Y300 F2000
+    M104 S0
+    M140 S0
+    M106 S0
+    M84 X Y E
+    BED_MESH_CLEAR
+
+
+#### END PRINT MULTILAYER ####
+
+[gcode_macro END_PRINT_MULTILAYER]
+gcode:
+    M117 Trocar Filamento
+    G1 X10 Y290 Z30 F2000
+    G92 E0
+
+
+klipper prusaslicer
+
+
+M104 S150 ;extruder temp
+M140 S60  ;bed temp
+
+M190 S60   ;Bed temp and wait
+M109 S150  ;Extruder temp and wait
+     
+START_PRINT BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[first_layer_temperature]
+;START_PRINT_MULTILAYER BED_TEMP=[first_layer_bed_temperature] EXTRUDER_TEMP=[first_layer_temperature]
