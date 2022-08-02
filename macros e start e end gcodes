@@ -10,9 +10,10 @@ M109 S[first_layer_temperature] ;heat up the nozzle and wait till temperature is
 G92 E0                           ; Reset Extruder
 
 M117 Linha de Purga              ; Linha de purga
-G1 X4.1 Y200.0 Z0.2 F1500.0 E15  ; Draw the first line
-G1 X4.4 Y200.0 Z0.2 F5000.0      ; Move to side a little
-G1 X4.4 Y20 Z0.2 F1500.0 E30     ; Draw the second line
+G1 X1 Y30 Z0.28 F5000.0
+G1 X4.1 Y200.0 Z0.28 F1500.0 E15  ; Draw the first line
+G1 X4.4 Y200.0 Z0.28 F5000.0      ; Move to side a little
+G1 X4.4 Y20 Z0.28 F1500.0 E30     ; Draw the second line
 G92 E0                           ; Reset Extruder
 G1 Z5.0 F3000                    ; Lift nozzle 5 mm
 M117 A Imprimir
@@ -26,9 +27,10 @@ cura
 G92 E0                           ; Reset Extruder
 
 M117 Linha de Purga              ; Linha de purga
-G1 X4.1 Y200.0 Z0.2 F1500.0 E15  ; Draw the first line
-G1 X4.4 Y200.0 Z0.2 F5000.0      ; Move to side a little
-G1 X4.4 Y20 Z0.2 F1500.0 E30     ; Draw the second line
+G1 X4.1 Y30 Z0.28 F5000.0
+G1 X4.1 Y200.0 Z0.28 F1500.0 E15  ; Draw the first line
+G1 X4.4 Y200.0 Z0.28 F5000.0      ; Move to side a little
+G1 X4.4 Y20 Z0.28 F1500.0 E30     ; Draw the second line
 G92 E0                           ; Reset Extruder
 G1 Z5.0 F3000                    ; Lift nozzle 5 mm
 M117 A Imprimir
