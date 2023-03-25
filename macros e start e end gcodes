@@ -19,9 +19,6 @@ G1 Z5.0 F3000                    ; Lift nozzle 5 mm
 M117 A Imprimir
 
 
-cura
-
-
 ;Start Gcodes multicolor same layer
 
 G92 E0                           ; Reset Extruder
