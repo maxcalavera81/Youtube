@@ -44,7 +44,7 @@ M117 Impressao finalizada...
 G91                              ; Relative positioning
 G1 E-0.5 F3000                   ; Retract a bit more and raise Z
 G90                              ; Return to absolute positionning
-G1 X10 Y200 Z30 F2000            ; Wipe out
+G1 X10 Y200 F2000            ; Wipe out
 G92 E0                           ; Reset Extruder
 
 
